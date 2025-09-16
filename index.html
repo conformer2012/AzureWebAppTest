@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Sample Static Web App — Test Page</title>
+  <meta name="description" content="A small static HTML test page with interactive bits for development and QA." />
+  <style>
+    /* Simple, self-contained styles for testing responsive layouts and components */
+    :root{
+      --bg:#0f1724; --card:#0b1220; --muted:#9aa6b2; --accent:#4f46e5; --glass: rgba(255,255,255,0.04);
+      --maxw:1100px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;font-size:16px;background:linear-gradient(180deg,#071124 0%, #081726 60%);color:#e6eef6;display:flex;align-items:flex-start;justify-content:center;padding:28px}
+    .container{width:100%;max-width:var(--maxw)}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700}
+    nav a{color:var(--muted);text-decoration:none;margin-left:16px}
+    .hero{background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);padding:28px;border-radius:12px;display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:center;margin-bottom:18px}
+    .hero h1{margin:0 0 8px 0;font-size:28px}
+    .hero p{margin:0;color:var(--muted)}
+    .card{background:var(--card);padding:16px;border-radius:10px;box-shadow:0 6px 18px rgba(2,6,23,0.6);}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    .feature{padding:14px;border-radius:8px;background:linear-gradient(180deg,var(--glass),transparent);min-height:90px}
+    .muted{color:var(--muted);font-size:14px}
+    footer{margin-top:18px;color:var(--muted);text-align:center}
+    .btn{display:inline-block;padding:10px 14px;border-radius:8px;background:var(--accent);color:white;text-decoration:none;font-weight:600;cursor:pointer;border:0}
+
+    /* form */
+    form{display:flex;flex-direction:column;gap:10px}
+    input,textarea,select{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:10px;border-radius:6px;color:inherit}
+    label{font-size:13px}
+
+    /* small utilities */
+    .row{display:flex;gap:10px}
+    .pill{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.03);font-size:13px}
+
+    /* modal */
+    .modal-backdrop{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(0,0,0,0.45),rgba(0,0,0,0.55));}
+    .modal{width:min(640px,94%);background:#07101b;padding:18px;border-radius:12px}
+
+    /* responsive */
+    @media (max-width:880px){
+      .hero{grid-template-columns:1fr}
+      .logo{width:40px;height:40px}
+    }
+
+    /* Light theme (for quick toggle) */
+    .light{--bg:#f6f8fb;--card:#ffffff;color:#0b1220}
+    .light body{background:var(--bg)}
+  </style>
+</head>
+<body>
+  <div class="container" id="app">
+    <header>
+      <div class="brand">
+        <div class="logo">SW</div>
+        <div>
+          <div style="font-weight:700">Sample Web</div>
+          <div class="muted" style="font-size:13px">Static app test page</div>
+        </div>
+      </div>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#test-area">Test area</a>
+        <button class="btn" id="openModalBtn">Open Modal</button>
+      </nav>
+    </header>
+
+    <section class="hero card">
+      <div>
+        <h1>Static Web App — Ready for testing</h1>
+        <p class="muted">This single-file page includes layout, components, a form, simple interactivity (modal, theme toggle, live preview), and a little data table generator so you can test static hosting behavior.</p>
+
+        <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+          <button class="btn" id="themeToggle">Toggle Theme</button>
+          <button class="btn" id="addRowBtn">Add Example Row</button>
+          <span class="pill" id="rowCount">Rows: 0</span>
+        </div>
+      </div>
+
+      <aside>
+        <div class="card" style="margin-bottom:10px">
+          <strong>Quick test form</strong>
+          <form id="testForm">
+            <label for="name">Name</label>
+            <input id="name" placeholder="Your name" />
+
+            <label for="type">Type</label>
+            <select id="type">
+              <option value="alpha">Alpha</option>
+              <option value="beta">Beta</option>
+              <option value="gamma">Gamma</option>
+            </select>
+
+            <label for="notes">Notes</label>
+            <textarea id="notes" rows="3" placeholder="Some notes..."></textarea>
+
+            <div class="row" style="justify-content:flex-end">
+              <button type="button" class="btn" id="submitForm">Submit</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="card">
+          <div class="muted">Live preview</div>
+          <div id="preview" style="margin-top:8px;font-size:14px">No data yet.</div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="features" class="card" style="margin-bottom:12px">
+      <h3 style="margin-top:0">Features</h3>
+      <div class="grid">
+        <div class="feature">
+          <strong>Responsive layout</strong>
+          <div class="muted">Resize the browser to test breakpoints and stacking behavior.</div>
+        </div>
+        <div class="feature">
+          <strong>Form & preview</strong>
+          <div class="muted">Submit the test form to see the live preview update.</div>
+        </div>
+        <div class="feature">
+          <strong>Client-side data table</strong>
+          <div class="muted">Add rows and test pagination, searching, sorting (simple JS provided below).</div>
+        </div>
+        <div class="feature">
+          <strong>Modal & keyboard</strong>
+          <div class="muted">Open the modal with the button or press <code>m</code> (try it).</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="test-area" class="card">
+      <h3 style="margin-top:0">Test data table</h3>
+      <div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
+        <input id="search" placeholder="Search name..." />
+        <button class="btn" id="clearBtn">Clear</button>
+        <div class="muted" style="margin-left:auto">Double-click a row to remove it.</div>
+      </div>
+
+      <div class="card" style="padding:8px;overflow:auto">
+        <table id="dataTable" style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr class="muted" style="text-align:left;font-size:13px">
+              <th style="padding:8px">#</th>
+              <th style="padding:8px">Name</th>
+              <th style="padding:8px">Type</th>
+              <th style="padding:8px">Notes</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="muted">Static page for testing — no external resources used. Press <strong>m</strong> to open modal, <strong>t</strong> to toggle theme.</footer>
+  </div>
+
+  <!-- Modal markup -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <h3>Test Modal</h3>
+      <p class="muted">This is a simple modal. Click outside or press Escape to close.</p>
+      <div style="margin-top:12px;text-align:right">
+        <button class="btn" id="closeModalBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Small client-side script to exercise interactions — useful for static hosting tests
+    (function(){
+      const app = document.getElementById('app');
+      const themeToggle = document.getElementById('themeToggle');
+      const openModalBtn = document.getElementById('openModalBtn');
+      const modalBackdrop = document.getElementById('modalBackdrop');
+      const closeModalBtn = document.getElementById('closeModalBtn');
+      const submitForm = document.getElementById('submitForm');
+      const preview = document.getElementById('preview');
+      const addRowBtn = document.getElementById('addRowBtn');
+      const dataTableBody = document.querySelector('#dataTable tbody');
+      const rowCount = document.getElementById('rowCount');
+      const search = document.getElementById('search');
+      const clearBtn = document.getElementById('clearBtn');
+
+      let rows = [];
+
+      function renderTable(filter){
+        dataTableBody.innerHTML = '';
+        const filtered = rows.filter(r => !filter || r.name.toLowerCase().includes(filter.toLowerCase()));
+        filtered.forEach((r,i)=>{
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td style="padding:8px">${i+1}</td><td style="padding:8px">${escapeHtml(r.name)}</td><td style="padding:8px">${escapeHtml(r.type)}</td><td style="padding:8px">${escapeHtml(r.notes)}</td>`;
+          tr.addEventListener('dblclick', ()=>{ rows = rows.filter(x=>x.id!==r.id); update(); });
+          dataTableBody.appendChild(tr);
+        });
+        rowCount.textContent = `Rows: ${rows.length}`;
+      }
+
+      function escapeHtml(s){ return String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+      function update(){ renderTable(search.value); }
+
+      // form submit
+      submitForm.addEventListener('click', ()=>{
+        const name = document.getElementById('name').value.trim();
+        const type = document.getElementById('type').value;
+        const notes = document.getElementById('notes').value.trim();
+        if(!name){ alert('Please enter a name'); return; }
+        const record = { id: cryptoRandomId(), name, type, notes };
+        rows.push(record);
+        preview.textContent = `Last submitted: ${name} (${type}) — ${notes || '—'}`;
+        // clear inputs
+        document.getElementById('name').value=''; document.getElementById('notes').value='';
+        update();
+      });
+
+      addRowBtn.addEventListener('click', ()=>{
+        const sample = { id: cryptoRandomId(), name: 'Item '+(rows.length+1), type: ['alpha','beta','gamma'][rows.length%3], notes: 'Auto-added' };
+        rows.push(sample);
+        update();
+      });
+
+      search.addEventListener('input', ()=> update());
+      clearBtn.addEventListener('click', ()=>{ search.value=''; update(); });
+
+      function cryptoRandomId(){ return Math.random().toString(36).slice(2,10); }
+
+      // modal
+      function openModal(){ modalBackdrop.style.display='flex'; }
+      function closeModal(){ modalBackdrop.style.display='none'; }
+      openModalBtn.addEventListener('click', openModal);
+      closeModalBtn.addEventListener('click', closeModal);
+      modalBackdrop.addEventListener('click', (e)=>{ if(e.target===modalBackdrop) closeModal(); });
+
+      // keyboard shortcuts
+      document.addEventListener('keydown', (e)=>{
+        if(e.key==='m') openModal();
+        if(e.key==='t') toggleTheme();
+        if(e.key==='Escape') closeModal();
+      });
+
+      // theme toggle
+      function toggleTheme(){ document.documentElement.classList.toggle('light'); }
+      themeToggle.addEventListener('click', toggleTheme);
+
+      // simple progressive enhancement: try to persist to localStorage
+      try{
+        const saved = localStorage.getItem('sampleRows');
+        if(saved){ rows = JSON.parse(saved); update(); }
+        window.addEventListener('beforeunload', ()=> localStorage.setItem('sampleRows', JSON.stringify(rows)) );
+      }catch(e){ /* ignore */ }
+
+      // small accessibility: focus first input on load
+      document.getElementById('name').focus();
+
+      // expose a tiny test API for automated checks
+      window.__sampleTestAPI = {
+        addRow: ()=>{ addRowBtn.click(); },
+        getRowCount: ()=> rows.length,
+        clearRows: ()=>{ rows=[]; update(); }
+      };
+
+    })();
+  </script>
+</body>
+</html>
